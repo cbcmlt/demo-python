@@ -45,22 +45,12 @@
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
     <script>
-        // Python-Logik (läuft via Pyodide im Browser) — nur synthetische Demo-Daten (C0)
-        const PY = `
-import json, random
-projects = ["B-Tunnel Nord", "Brückenfeld Süd", "Halle 7 Ausbau", "Trasse West"]
-states = ["In Planung", "In Ausführung", "Abnahme", "Abgeschlossen"]
-def uebersicht():
-    return json.dumps({
-        "project": random.choice(projects),
-        "status": random.choice(states),
-        "progress": random.randint(0, 100),
-    })
-`;
+        // Lädt das echte app.py und führt es via Pyodide im Browser aus (C0-Demodaten).
         let pyodide;
         async function boot() {
             pyodide = await loadPyodide();
-            await pyodide.runPythonAsync(PY);
+            const code = await (await fetch("app.py")).text();
+            await pyodide.runPythonAsync(code);
             const btn = document.getElementById("refresh");
             btn.disabled = false;
             btn.textContent = "Aktualisieren";
